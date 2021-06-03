@@ -30,7 +30,7 @@ public class GuestbookController {
 		return "redirect:/";
 	}
 	
-	@RequestMapping("/deleteform/{no}")
+	@RequestMapping(value="/deleteform/{no}", method=RequestMethod.GET)
 	public String deleteform(@PathVariable("no") Long no, Model model) {
 		model.addAttribute("no", no);
 		return "/WEB-INF/views/deleteform.jsp";
