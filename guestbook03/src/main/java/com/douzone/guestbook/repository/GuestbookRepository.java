@@ -1,4 +1,4 @@
-package com.douzone.emaillist.repository;
+package com.douzone.guestbook.repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,23 +10,23 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.douzone.emaillist.vo.EmaillistVo;
+import com.douzone.guestbook.vo.GuestbookVo;
 
 @Repository
-public class EmaillistRepository {
-	public Boolean insert(EmaillistVo vo) {
+public class GuestbookRepository {
+	public Boolean insert(GuestbookVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		boolean result = false;
 		try {
 			conn = getConnection();
 
-			String sql = "insert into emaillist values(null, ?, ?, ?)";
+			String sql = "insert into guestbook values(null, ?, ?, ?, now())";
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, vo.getFirstName());
-			pstmt.setString(2, vo.getLastName());
-			pstmt.setString(3, vo.getEmail());
+			pstmt.setString(1, vo.getName());
+			pstmt.setString(2, vo.getPassword());
+			pstmt.setString(3, vo.getMessage());
 
 			int count = pstmt.executeUpdate();
 			result = count == 1;
@@ -64,8 +64,8 @@ public class EmaillistRepository {
 		return conn;
 	}
 
-	public List<EmaillistVo> findAll() {
-		List<EmaillistVo> result = new ArrayList<>();
+	public List<GuestbookVo> findAll() {
+		List<GuestbookVo> result = new ArrayList<>();
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -74,21 +74,23 @@ public class EmaillistRepository {
 		try {
 			conn = getConnection();
 
-			String sql = "select no, first_name, last_name, email from emaillist order by no desc";
+			String sql = "select no, name, password, message, reg_date from guestbook order by no desc";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				Long no = rs.getLong(1);
-				String firstName = rs.getString(2);
-				String lastName = rs.getString(3);
-				String email = rs.getString(4);
+				String name = rs.getString(2);
+				String password = rs.getString(3);
+				String message = rs.getString(4);
+				String rdate = rs.getString(5);
 				
-				EmaillistVo vo = new EmaillistVo();
+				GuestbookVo vo = new GuestbookVo();
 				vo.setNo(no);
-				vo.setFirstName(firstName);
-				vo.setLastName(lastName);
-				vo.setEmail(email);
+				vo.setName(name);
+				vo.setPassword(password);
+				vo.setMessage(message);
+				vo.setRegDate(rdate);
 				result.add(vo);
 			}
 
@@ -113,4 +115,39 @@ public class EmaillistRepository {
 
 		return result;
 	}
+	
+	public boolean delete(Long no, String password) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		boolean result = false;
+		try {
+			conn = getConnection();
+			
+			String sql = "delete from guestbook where no = ? and password = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, no);
+			pstmt.setString(2, password);
+			
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
 }
