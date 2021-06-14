@@ -14,7 +14,7 @@ public class AppConfigTest {
 	//설정 클래스에 @Configuration이 필요없다.
 	@Test
 	public void testAppConfig01() {
-		ApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig01.class);
+		ApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig02.class);
 		User user = ac.getBean(User.class);
 		assertNotNull(user);	
 	}

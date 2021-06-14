@@ -21,7 +21,7 @@ public class XmlConfigTest {
 		// XML Auto Configuration(Annotation Scanning)
 		//testApplicationContext01();
 		
-		testApplicationContext02();
+		//testApplicationContext02();
 	}
 
 	// XML Auto Configuration(Annotation Scanning)
